@@ -7,13 +7,13 @@ var svg = document.getElementById("TV");
 var dvdBtn = document.getElementById("DVDBtn");
 var circleBtn = document.getElementById("circleBtn");
 var stopBtn = document.getElementById("stopBtn");
-var dvdImg = new Image();
-dvdImg.src = "dvd_logo.png";
+var dvdFile = "dvd_logo.png";
 var requestId;
 
 // SVG Globals
 var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 var dvd = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+var dvdImg = document.createElementNS("http://www.w3.org/2000/svg", "image");
 // NOTE: Do I need an image global?
 
 // Position Globals
@@ -98,18 +98,27 @@ var animateDVD = function(e) {
     window.cancelAnimationFrame(requestId);
 
     var drawDVD = function(e) {
+	if (dvdFirst) {
+	    dvdImg.setAttribute("href", dvdFile);
+	    dvdImg.setAttribute("xlink:href", dvdFile);
+	    dvdImg.setAttribute("height", dvdHeight);
+	    dvdImg.setAttribute("width", dvdWidth);
+	    dvdFirst = false;
+	}
         if (dvdColorSelector == 1) {
-          dvdColor = redTransparent;
+            dvdColor = redTransparent;
         } else {
             dvdColor = blueTransparent;
         }
 
-        //ctx.drawImage(dvdImg, dvdX, dvdY);
         dvd.setAttribute("x", dvdX);
         dvd.setAttribute("y", dvdY);
         dvd.setAttribute("width", dvdWidth);
         dvd.setAttribute("height", dvdHeight);
         dvd.setAttribute("fill", dvdColor);
+
+	dvdImg.setAttribute("x", dvdX);
+	dvdImg.setAttribute("y", dvdY);
 
         if (dvdX + dvdWidth >= svgW) {
             dvdXDir = -1;
@@ -133,6 +142,7 @@ var animateDVD = function(e) {
 
         if (lastAnimation != "dvd") {
             clearSVG();
+	    svg.appendChild(dvdImg);
             svg.appendChild(dvd);
         }
         lastAnimation = "dvd";
